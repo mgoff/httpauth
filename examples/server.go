@@ -5,30 +5,24 @@ import (
 	"html/template"
 	"net/http"
 	"strings"
-	"os"
 
 	"github.com/apexskier/httpauth"
 	"github.com/gorilla/mux"
 )
 
 var (
-	backend     httpauth.LeveldbAuthBackend
+	backend     httpauth.MongodbAuthBackend
 	aaa         httpauth.Authorizer
 	roles       map[string]httpauth.Role
 	port        = 8009
-	backendfile = "auth.leveldb"
 )
 
 func main() {
 	var err error
-	os.Mkdir(backendfile, 0755)
-	defer os.Remove(backendfile)
 
 	// create the backend
-	backend, err = httpauth.NewLeveldbAuthBackend(backendfile)
-	if err != nil {
-		panic(err)
-	}
+	backend, err = httpauth.NewMongodbBackend("mongodb://127.0.0.1/", "auth")
+	defer backend.Close()
 
 	// create some default roles
 	roles = make(map[string]httpauth.Role)

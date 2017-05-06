@@ -10,15 +10,7 @@ This package uses the [Gorilla web toolkit](http://www.gorillatoolkit.org/)'s
 sessions package to implement a user authentication and authorization system
 for Go web servers.
 
-Multiple user data storage backends are available, and new ones can be
-implemented relatively easily.
-
-- [File based](https://godoc.org/github.com/apexskier/goauth#NewGobFileAuthBackend) ([gob](http://golang.org/pkg/encoding/gob/))
-- [Various SQL Databases](https://godoc.org/github.com/apexskier/httpauth#NewSqlAuthBackend)
-  (tested with [MySQL](https://github.com/go-sql-driver/mysql),
-  [PostgresSQL](https://github.com/lib/pq),
-  [SQLite](https://github.com/mattn/go-sqlite3))
-- [MongoDB](https://godoc.org/github.com/apexskier/httpauth#NewMongodbBackend) ([mgo](http://gopkg.in/mgo.v2))
+This fork from [https://github.com/apexskier/httpauth](https://github.com/apexskier/httpauth) includes support only for MongoDB as the data storage backend to ensure a clear, working example for folks using [MongoDB](https://godoc.org/github.com/apexskier/httpauth#NewMongodbBackend) and [mgo](http://gopkg.in/mgo.v2).
 
 Access can be restricted by a users' role.
 
@@ -45,8 +37,38 @@ func login(rw http.ResponseWriter, req *http.Request) {
 Run `go run server.go` from the examples directory and visit `localhost:8009`
 for an example. You can login with the username "admin" and password "adminadmin".
 
-Tests can be run by simulating Travis CI's build environment. There's a very
-unsafe script --- `start-test-env.sh` that will do this for you.
+Tests can be run with:
+
+```bash
+$ go test -test.v
+=== RUN   TestNewAuthorizer
+--- PASS: TestNewAuthorizer (0.04s)
+=== RUN   TestRegister
+--- PASS: TestRegister (0.08s)
+=== RUN   TestUpdate
+--- PASS: TestUpdate (0.00s)
+=== RUN   TestLogin
+--- PASS: TestLogin (0.21s)
+=== RUN   TestAuthorize
+--- PASS: TestAuthorize (0.14s)
+  auth_test.go:135: Authorization: didn't catch new cookie
+=== RUN   TestAuthorizeRole
+--- PASS: TestAuthorizeRole (0.14s)
+=== RUN   TestLogout
+--- PASS: TestLogout (0.00s)
+=== RUN   TestDeleteUser
+--- PASS: TestDeleteUser (0.00s)
+=== RUN   TestMongodbInit
+--- PASS: TestMongodbInit (0.00s)
+=== RUN   TestNewMongodbAuthBackend
+--- PASS: TestNewMongodbAuthBackend (10.65s)
+=== RUN   TestMongodbReopen
+--- PASS: TestMongodbReopen (0.00s)
+PASS
+ok    httpauth-fork 11.261s
+```
+
+Make sure to install and start MongoDB before running the tests. The script `start-test-env.sh` can help to start an instance of MongoDB.
 
 You should [follow me on Twitter](https://twitter.com/apexskier). [Appreciate this package?](https://cash.me/$apexskier)
 

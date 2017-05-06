@@ -3,15 +3,13 @@ package httpauth
 import (
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 	"time"
 )
 
 var (
-	b          GobFileAuthBackend
+	b          MongodbAuthBackend
 	a          Authorizer
-	file       = "auth_test.gob"
 	c          http.Client
 	authCookie http.Cookie
 )
@@ -30,15 +28,10 @@ func init() {
 }
 
 func TestNewAuthorizer(t *testing.T) {
-	os.Remove(file)
-	if _, err := os.Create(file); err != nil {
-		t.Fatal(err.Error())
-	}
-
 	var err error
-	b, err = NewGobFileAuthBackend(file)
+	b, err = NewMongodbBackend("mongodb://127.0.0.1/", "auth")
 	if err != nil {
-		t.Fatal(err.Error())
+		t.Fatalf("NewMongodbBackend error: %v", err)
 	}
 
 	roles := make(map[string]Role)
@@ -197,6 +190,4 @@ func TestDeleteUser(t *testing.T) {
 	if err := a.DeleteUser("username"); err != ErrDeleteNull {
 		t.Fatalf("DeleteUser should have returned ErrDeleteNull: got %v", err)
 	}
-
-	os.Remove(file)
 }
